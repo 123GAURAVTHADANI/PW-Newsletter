@@ -1,13 +1,38 @@
 var mongoose = require("mongoose");
+var bcrypt = require("bcrypt");
+
+let communicationSchema = new mongoose.Schema({
+  address_1: {
+    type: String,
+    required: true,
+  },
+  address_2: {
+    type: String,
+    required: true,
+  },
+  country: {
+    type: String,
+    enum: ["INDIA", "US", "AUSTRALIA"],
+    default: "INDIA",
+  },
+  phone_number_country_code: {
+    type: String,
+    default: "+91",
+  },
+  state: {
+    type: String,
+    required: true,
+  },
+});
 
 let userSchema = new mongoose.Schema(
   {
-    first_name: {
+    firstname: {
       type: String,
       required: [true, "Please enter the First Name"],
       minLength: 3,
     },
-    last_name: {
+    lastname: {
       type: String,
       required: [true, "Please enter the Second Name"],
       minLength: 3,
@@ -53,7 +78,12 @@ let userSchema = new mongoose.Schema(
     },
     dob: {
       type: Date,
-      required: [true, "Kindly provide the DOB!"],
+      required: [false, "Kindly provide the DOB!"],
+    },
+    phoneNumber: {
+      required: [true, "Kindly Give the Phone Number"],
+      type: String,
+      minLength: 10,
     },
     article: [
       {
@@ -61,38 +91,16 @@ let userSchema = new mongoose.Schema(
         ref: "Article",
       },
     ],
-    phoneNumber: {
-      required: [true, "Kindly Give the Phone Number"],
-      type: Number,
-      min: 10,
-      max: 10,
-    },
-    communication_address: {
-      address_1: {
-        type: String,
-        required: true,
-      },
-      address_2: {
-        type: String,
-        required: true,
-      },
-      country: {
-        type: String,
-        enum: ["INDIA", "US", "AUSTRALIA"],
-        default: "INDIA",
-      },
-      phone_number_country_code: {
-        type: String,
-        default: "+91",
-      },
-      state: {
-        type: String,
-        required: true,
-      },
-    },
+
+    communication_address: communicationSchema,
   },
   { timestamps: true }
 );
+
+userSchema.pre("save", async function (next) {
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
 
 const User = mongoose.model("User", userSchema);
 module.exports = { User };
