@@ -15,7 +15,7 @@ const articleSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
     },
     article_image_url: {
       type: String,
@@ -27,6 +27,12 @@ const articleSchema = new mongoose.Schema(
       required: true,
       default: "lifestyle",
     },
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment",
+      },
+    ],
   },
   { timestamps: true }
 );

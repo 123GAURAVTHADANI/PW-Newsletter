@@ -17,8 +17,8 @@ userRouter.post("/login", loginUser);
 
 userRouter.get(
   "/getUsers",
-  isLoggedIn,
-  authorizeRole("ADMIN", "USER", "QA-Tester"),
+  // isLoggedIn,
+  // authorizeRole("ADMIN", "USER", "QA-Tester"),
   getUsers
 );
 

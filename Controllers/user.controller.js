@@ -41,8 +41,8 @@ async function loginUser(req, res) {
 }
 
 function getUsers(req, res) {
-  console.log(">>", req.user);
   User.find()
+    .populate({ path: "article" })
     .then((response) => {
       res.status(200).json({
         Message: "User is Successfully fetched!",
@@ -53,6 +53,7 @@ function getUsers(req, res) {
       res.status(500).json({ Message: "Something went wrong", error: error });
     });
 }
+
 function deleteUsers(req, res) {
   User.deleteMany()
     .then((response) => {
