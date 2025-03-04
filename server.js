@@ -17,7 +17,7 @@ let PORT = process.env.PORT || 3000;
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/article", articleRouter);
 app.use("/api/v1/comment", commentRouter);
-
+// app.use("/api/v1/likes", likeRouter);
 /**
  * * This method is listening to a port 5001 or 3000
  *

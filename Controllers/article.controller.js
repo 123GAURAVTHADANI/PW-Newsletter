@@ -21,6 +21,7 @@ async function createArticle(req, res) {
 function getPosts(req, res) {
   Article.find()
     .populate({ path: "comments" })
+    .select("-comments")
     .then((response) => {
       res.status(200).json({
         Message: "Posts are Successfully fetched!",

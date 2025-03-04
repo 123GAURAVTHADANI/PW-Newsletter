@@ -8,6 +8,8 @@ const {
   getUsers,
   loginUser,
   deleteUsers,
+  getUserById,
+  subscribeUser,
 } = require("../Controllers/user.controller");
 var userRouter = express.Router();
 
@@ -21,6 +23,8 @@ userRouter.get(
   // authorizeRole("ADMIN", "USER", "QA-Tester"),
   getUsers
 );
+userRouter.get("/getUser/:id", getUserById);
+userRouter.patch("/subscribeUser", isLoggedIn, subscribeUser);
 
 userRouter.delete(
   "/deleteUsers",

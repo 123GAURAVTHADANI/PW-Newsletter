@@ -23,6 +23,7 @@ async function loginUser(req, res) {
     }
     let userPassword = user.password;
     let isVerified = await bcrypt.compare(password, userPassword);
+    console.log(isVerified);
     if (!isVerified) {
       res.status(401).json({ Message: "Unauthorized User!" });
       return;
@@ -41,7 +42,11 @@ async function loginUser(req, res) {
 }
 
 function getUsers(req, res) {
+  let { limit, page } = req.query;
   User.find()
+    .sort("-createdAt")
+    .limit(Number(limit))
+    .skip(Number(page - 1) * Number(limit))
     .populate({ path: "article" })
     .then((response) => {
       res.status(200).json({
@@ -66,4 +71,38 @@ function deleteUsers(req, res) {
       res.status(500).json({ Message: "Something went wrong", error: error });
     });
 }
-module.exports = { createUser, loginUser, getUsers, deleteUsers };
+
+function getUserById(req, res) {
+  let { id } = req.params;
+  User.findOne({ _id: id })
+    .then((response) => {
+      res.status(200).json({
+        Message: "User is fetched!! Successfully!",
+        response: response,
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({ Message: "Something went wrong", error: error });
+    });
+}
+async function subscribeUser(req, res) {
+  try {
+    const updateUser = await User.findByIdAndUpdate(req.user.id, {
+      isSubscribed: true,
+    });
+    if (!updateUser) {
+      return res.status(404).json({ Message: "Page not found!" });
+    }
+    res.status(200).json({ Message: "User is Subscribed" });
+  } catch (err) {
+    res.status(500).json({ Message: "Something went wrong", error: error });
+  }
+}
+module.exports = {
+  createUser,
+  loginUser,
+  getUsers,
+  deleteUsers,
+  getUserById,
+  subscribeUser,
+};
