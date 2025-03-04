@@ -2,7 +2,6 @@ var jwt = require("jsonwebtoken");
 async function isLoggedIn(req, res, next) {
   try {
     let { newlettertoken } = req.cookies;
-    console.log(newlettertoken);
     if (!newlettertoken) {
       res.status(401).json({
         Message: "Kindly Login!!",
@@ -17,8 +16,5 @@ async function isLoggedIn(req, res, next) {
     res.status(500).json({ Message: "Something went wrong", error: err });
   }
 }
-
-
-
 
 module.exports = { isLoggedIn };

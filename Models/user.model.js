@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
 var bcrypt = require("bcrypt");
+const cloudinary = require("cloudinary").v2;
 
 let communicationSchema = new mongoose.Schema({
   address_1: {
@@ -96,10 +97,18 @@ let userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
 userSchema.pre("save", async function (next) {
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
+  // new password / modified
+  if (this.isModified("password")) {
+    this.password = await bcrypt.hash(this.password, 10);
+    next();
+  } else if (this.isModified("avatar")) {
+    let result = await cloudinary.uploader.upload(this.avatar);
+    console.log(result);
+    next();
+  } else {
+    next();
+  }
 });
 
 const User = mongoose.model("User", userSchema);

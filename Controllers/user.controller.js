@@ -13,6 +13,17 @@ function createUser(req, res) {
       res.status(500).json({ Message: "Something went wrong!", error: error });
     });
 }
+async function uploadImg(req, res) {
+  const { path } = req.file;
+
+  let { id } = req.user;
+  const user = await User.findOne({ _id: id });
+  if (!user) {
+    return res.status(200).json({ Message: "Unauthorized to loggin!!" });
+  }
+  user.avatar = path;
+  await user.save();
+}
 async function loginUser(req, res) {
   try {
     let { email, password } = req.body;
@@ -85,6 +96,21 @@ function getUserById(req, res) {
       res.status(500).json({ Message: "Something went wrong", error: error });
     });
 }
+async function getPostByUserId(req, res) {
+  let { id } = req.params;
+  User.findOne({ _id: id })
+    .populate({ path: "article" })
+    .select("article")
+    .then((response) => {
+      res.status(200).json({
+        Message: "User Post is fetched Successfully!",
+        response: response,
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({ Message: "Something went wrong", error: error });
+    });
+}
 async function subscribeUser(req, res) {
   try {
     const updateUser = await User.findByIdAndUpdate(req.user.id, {
@@ -105,4 +131,6 @@ module.exports = {
   deleteUsers,
   getUserById,
   subscribeUser,
+  getPostByUserId,
+  uploadImg,
 };

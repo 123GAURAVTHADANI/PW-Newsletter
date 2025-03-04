@@ -8,9 +8,11 @@ const { Article } = require("./Models/article.model");
 const { userRouter } = require("./Routers/user.router");
 const { articleRouter } = require("./Routers/article.router");
 const { commentRouter } = require("./Routers/comment.router");
+const { cloudinaryConfig } = require("./Configurations/cloudinary.config");
 dotenv.config();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 let PORT = process.env.PORT || 3000;
 
@@ -24,5 +26,6 @@ app.use("/api/v1/comment", commentRouter);
  */
 app.listen(PORT, () => {
   dbConfig();
+  cloudinaryConfig();
   console.log(`Listening to the port ${PORT}`);
 });
